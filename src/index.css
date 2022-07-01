@@ -1,13 +1,85 @@
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+/* ======================================= root vars */
+:root {
+  --main-bg: linear-gradient(45deg,#00c9ff, #92fe9d);
+  --main: #00c9ff;
+  --secondary: #92fe9d;
+
+  --medium-font-size: 1.5rem;
+  --icon-font-size: 2.25rem;
+}
+/* ======================================= backgrounds */
+.bg-main{
+  background: var(--main-bg) !important;
+}
+/* ======================================= heights & widths */
+/* ======================================= borders */
+.border-right{
+  border-right: 2px solid #ababab;
+}
+/* ======================================= typography */
+.medium-fs{
+  font-size: var(--medium-font-size);
+}
+.icon-fs{
+  font-size: var(--icon-font-size);
+}
+/* ======================================= buttons */
+.btn-main{
+  background-color: var(--main) !important;
+}
+.button-block{
+  height: 50px;
+  width: 50px;
+}
+.button-block-flex-column{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+/* ======================================= flex */
+.flex-center{
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+}
+/* ======================================= links */
+.home-link{
+  height: 200px !important;
+  width: 350px !important;
+  transition: 0.35s;
+}
+.home-link:hover{
+  transform: scale(1.025);
+  transition: 0.35s;
+}
+/* ======================================= forms */
+.responsive-input{
+  width: 325px !important;
+}
+.responsive-input-register{
+  width: 575px !important;
+}
+@media screen and (max-width: 800px){
+  .responsive-input-register{
+    width: 100% !important;
+  }
+}
+input[type=submit]{
+  font-size: 1.25rem !important;
+  text-transform: uppercase;
+}
+/* ======================================= animation */
+
