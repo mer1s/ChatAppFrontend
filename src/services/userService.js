@@ -1,15 +1,15 @@
 import axios from "axios";
-import { accountsUrl } from "../config/urls";
+import { apiUrl } from "../config/urls";
 
-axios.defaults.baseURL = accountsUrl
+axios.defaults.baseURL = apiUrl
 
 const responseBody = response => response.data
 
 // const queryToken = localStorage.getItem("user") ? `?token=${JSON.parse(localStorage.getItem("user").token)}` : ''
 
 const methods = {
-    logIn: (loginValues) => axios.post(`/login`, loginValues).then(responseBody),
-    register: (registerValues) => axios.post('/register', registerValues).then(responseBody)
+    logIn: (loginValues) => axios.post(`/Customer/login`, loginValues).then(responseBody).catch(e => console.log("OVDE JE GRESKA")),
+    register: (registerValues) => axios.post('/Customer/register', registerValues).then(responseBody)
 }
 
 export default methods
