@@ -1,36 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { FloatingLabel, Form, InputGroup } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Form, InputGroup } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
-import { dummyChats } from "../dummyData";
 
 import chatService from "../services/chatService";
+// import { chatActions } from "../store/chat-slice";
+import { fetchChatRoomsAsync } from "../store/chat-slice";
 
 // Ovde ce biti dostupne grupe i razgovori
 const ChatList = () => {
   const [createChat, setCreateChat] = useState(false);
   // naziv chata koji ce biti dodan
   const [chatName, setChatName] = useState("");
-  // chats from backend
-  const [chats, setChats] = useState([]);
-  // loading chats from backend
-  const [loading, setLoading] = useState(true);
+  // chats from redux
+  const {rooms, status, error} = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    chatService
-      .getChats()
-      .then((data) => {
-        console.log(data);
-        setChats(data);
-      })
-      .catch((e) => console.log(e))
-      .finally(() => setLoading(false));
-  }, []);
+    dispatch(fetchChatRoomsAsync());
+  }, [dispatch]);
 
   const addChatSubmitHandler = (e) => {
     e.preventDefault();
     alert(`Chat ${chatName} has been created`);
+    chatService
+      .createChat({ name: chatName })
+      .then((data) => console.log(data))
+      .catch((e) => console.log(e));
     setCreateChat(false);
     setChatName("");
+  };
+
+  const showRoomMessagesHandler = (name) => {
+    console.log(name);
   };
 
   return (
@@ -63,16 +65,22 @@ const ChatList = () => {
         </div>
       )}
 
+
       {/* ovo ce biti zamenjeno konkretnim podacima */}
-      {loading ? (
+      {!error && status === 'pendingFetchRooms' ? (
         <p>Loading</p>
       ) : (
-        chats.map((n) => (
-          <div className="py-3 px-3 border-bottom" key={n.id}>
+        rooms.map((n) => (
+          <div
+            className="py-3 px-3 border-bottom"
+            key={n.id}
+            onClick={showRoomMessagesHandler.bind(this, n.name)}
+          >
             <h5 className="p-0 m-0 text-start fw-light">{n.name}</h5>
           </div>
         ))
       )}
+      {error && <p>REJECTED</p>}
     </div>
   );
 };
