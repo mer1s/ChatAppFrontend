@@ -5,7 +5,7 @@ import { FiPlus } from "react-icons/fi";
 
 // import chatService from "../services/chatService";
 // import { chatActions } from "../store/chat-slice";
-import { fetchChatRoomsAsync } from "../store/chat-slice";
+import { chatActions, fetchChatRoomsAsync } from "../store/chat-slice";
 import { createChatRoomAsync } from "../store/chat-slice";
 
 // Ovde ce biti dostupne grupe i razgovori
@@ -29,12 +29,12 @@ const ChatList = () => {
     setChatName("");
   };
 
-  const showRoomMessagesHandler = (name) => {
-    console.log(name);
+  const showRoomMessagesHandler = (n) => {
+    dispatch(chatActions.setRoom(n))
   };
 
   return (
-    <div>
+    <div className=" h-100-auto-overflow">
       <div className="bg-light w-100 mb-3 border-bottom d-flex justify-content-between align-items-center">
         <h3 className="p-0 m-0 py-3 text-center w-50 fw-light text-muted">
           Chat
@@ -70,15 +70,20 @@ const ChatList = () => {
       ) : (
         rooms.map((n) => (
           <div
-            className="py-3 px-3 border-bottom"
+            className="border-bottom"
             key={n.id}
-            onClick={showRoomMessagesHandler.bind(this, n.name)}
           >
-            <h5 className="p-0 m-0 text-start fw-light">{n.name}</h5>
+            <button 
+              className="text-start w-100 py-3 px-3 btn btn-light h-100"
+              onClick={showRoomMessagesHandler.bind(this, n)}
+            >
+              {n.name}
+            </button>
           </div>
         ))
       )}
       {error && <p>REJECTED</p>}
+      <div className="pt-5"></div>
     </div>
   );
 };

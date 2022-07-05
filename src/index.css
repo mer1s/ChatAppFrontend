@@ -23,7 +23,14 @@ body {
 .bg-main{
   background: var(--main-bg) !important;
 }
+.bg-light-transparent{
+  background: rgba(255,255,255,0.75);
+}
 /* ======================================= heights & widths */
+.h-100-auto-overflow{
+  height: 100vh !important;
+  overflow-y: auto !important;
+}
 /* ======================================= borders */
 .border-right{
   border-right: 2px solid #ababab;
@@ -82,4 +89,6 @@ input[type=submit]{
   text-transform: uppercase;
 }
 /* ======================================= animation */
-
+.overflow-auto{
+  overflow-y: auto !important;
+}

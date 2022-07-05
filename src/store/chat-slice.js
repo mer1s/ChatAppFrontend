@@ -4,7 +4,7 @@ import chatService from "../services/chatService";
 const initialState = {
   status: "idle",
   rooms: [],
-  activeRoomId: null,
+  activeRoom: null,
   error: null,
 };
 
@@ -37,6 +37,9 @@ const chatSlice = createSlice({
     setAllChats: (state, action) => {
       state.rooms = action.payload;
     },
+    setRoom: (state, action) =>{
+      state.activeRoom = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Fetch chat rooms
