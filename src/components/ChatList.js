@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, InputGroup } from "react-bootstrap";
 import { FiPlus } from "react-icons/fi";
 
-import chatService from "../services/chatService";
+// import chatService from "../services/chatService";
 // import { chatActions } from "../store/chat-slice";
 import { fetchChatRoomsAsync } from "../store/chat-slice";
+import { createChatRoomAsync } from "../store/chat-slice";
 
 // Ovde ce biti dostupne grupe i razgovori
 const ChatList = () => {
@@ -13,7 +14,7 @@ const ChatList = () => {
   // naziv chata koji ce biti dodan
   const [chatName, setChatName] = useState("");
   // chats from redux
-  const {rooms, status, error} = useSelector((state) => state.chat);
+  const { rooms, status, error } = useSelector((state) => state.chat);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -23,10 +24,7 @@ const ChatList = () => {
   const addChatSubmitHandler = (e) => {
     e.preventDefault();
     alert(`Chat ${chatName} has been created`);
-    chatService
-      .createChat({ name: chatName })
-      .then((data) => console.log(data))
-      .catch((e) => console.log(e));
+    dispatch(createChatRoomAsync({ name: chatName }));
     setCreateChat(false);
     setChatName("");
   };
@@ -65,9 +63,9 @@ const ChatList = () => {
         </div>
       )}
 
-
       {/* ovo ce biti zamenjeno konkretnim podacima */}
-      {!error && status === 'pendingFetchRooms' ? (
+      {(!error && status === "pendingFetchRooms") ||
+      status === "pendingAddRoom" ? (
         <p>Loading</p>
       ) : (
         rooms.map((n) => (
