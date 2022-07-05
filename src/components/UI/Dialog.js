@@ -17,7 +17,7 @@ const style = {
   p: 4,
 };
 
-const Dialog = ({ changeModalVisibility, open }) => {
+const Dialog = ({ changeModalVisibility, open, acceptHandler }) => {
   const handleClose = () => changeModalVisibility();
 
   return (
@@ -43,7 +43,7 @@ const Dialog = ({ changeModalVisibility, open }) => {
             </Typography>
             <div style={{marginTop: '2rem', display: 'flex', justifyContent: 'right'}}>
                 <button style={{marginLeft: '0.5rem'}} onClick={handleClose}>Close</button>
-                <button style={{marginLeft: '0.5rem'}}>Send Request</button>
+                <button style={{marginLeft: '0.5rem'}} onClick={acceptHandler}>Send Request</button>
             </div>
           </Box>
         </Fade>

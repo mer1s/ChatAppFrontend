@@ -7,6 +7,7 @@ import { FaSignInAlt } from "react-icons/fa";
 import Dialog from "./UI/Dialog";
 import { chatActions, fetchChatRoomsAsync } from "../store/chat-slice";
 import { createChatRoomAsync } from "../store/chat-slice";
+import { createJoinRequestAsync, requestActions } from "../store/request-slice";
 
 // Ovde ce biti dostupne grupe i razgovori
 const ChatList = () => {
@@ -15,6 +16,7 @@ const ChatList = () => {
   const [chatName, setChatName] = useState("");
   // chats from redux
   const { rooms, status, error } = useSelector((state) => state.chat);
+  const { chosenRoom, status: requestsStatus } = useSelector((state) => state.requests);
   // show modal
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(UserContext);
@@ -37,11 +39,35 @@ const ChatList = () => {
     dispatch(chatActions.setRoom(n));
   };
 
+  const openModal = (n) =>{
+    setShowModal(true);
+    // console.log(n)
+    dispatch(requestActions.chooseRoom(n))
+  }
+
+  const dialogHandler = () =>{
+    // console.log(user.id)
+    // console.log(chosenRoom)
+    dispatch(createJoinRequestAsync({
+      senderId: user.id,
+      senderUsername: user.username,
+      roomId: chosenRoom.id,
+      roomName: chosenRoom.name,
+    }))
+  }
+
+  useEffect(()=>{
+    if(requestsStatus === "idle"){
+      setShowModal(false)
+    }
+  },[requestsStatus])
+
   return (
     <>
       <Dialog
         changeModalVisibility={() => setShowModal(false)}
         open={showModal}
+        acceptHandler={dialogHandler}
       />
       <div className=" h-100-auto-overflow">
         <div className="bg-light w-100 mb-3 border-bottom d-flex justify-content-between align-items-center">
@@ -92,7 +118,7 @@ const ChatList = () => {
               </button>
               <button
                 className="btn btn-light"
-                onClick={(e) => setShowModal(true)}
+                onClick={(e) => openModal(n)}
               >
                 <FaSignInAlt />
               </button>

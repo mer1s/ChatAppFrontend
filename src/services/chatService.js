@@ -8,6 +8,7 @@ const responseBody = (response) => response.data;
 const methods = {
   getChats: () => axios.get("/Chat").then(responseBody),
   createChat: (payload) => axios.post("/Chat", payload).then(responseBody),
+  sendJoinRequest: (payload) => axios.post("Chat/requests/join-request", payload).then(responseBody)
 };
 
 export default methods;

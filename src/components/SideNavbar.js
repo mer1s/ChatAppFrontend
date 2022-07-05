@@ -15,7 +15,7 @@ const SideNavbar = ({onClickHandler}) => {
     }
 
   return (
-    <div className='min-vh-100 bg-white border-right px-2 d-flex flex-column pt-5'>
+    <div className='min-vh-100 bg-white border-right px-1 d-flex flex-column pt-5'>
         
         <button 
             className='btn btn-white w-100 button-block button-block-flex-column'
@@ -46,7 +46,7 @@ const SideNavbar = ({onClickHandler}) => {
             onClick={logOutHandler}    
         >
             <FiLogOut className='icon-fs' />
-            <h5 className='small text-muted text-center fw-light'>log out</h5>
+            <h5 className='small p-0 m-0 text-muted text-center fw-light'>log out</h5>
         </button>
 
     </div>
