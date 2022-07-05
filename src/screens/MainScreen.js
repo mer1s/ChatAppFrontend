@@ -19,7 +19,7 @@ const MainScreen = () => {
     useEffect(()=>{
       if(!user)
         navigate('/login')
-    },[])
+    },[navigate, user])
 
   return (
     <Container fluid className='m-0 p-0 min-vh-100 bg-main d-flex justify-content-start'>

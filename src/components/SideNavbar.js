@@ -1,11 +1,8 @@
 import React, { useContext } from 'react'
 import { FiBell, FiUser, FiMessageSquare, FiLogOut } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/userContext';
 
 const SideNavbar = ({onClickHandler}) => {
-    const navigate = useNavigate();
-
     const { user, logOut } = useContext(UserContext)
 
     const logOutHandler = () =>{
