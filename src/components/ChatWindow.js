@@ -151,8 +151,8 @@ const ChatWindow = ({room}) => {
         <h2 className='py-3 m-0'>{room.name}</h2>
         <div className='flex-fill p-3 border overflow-auto d-flex flex-column justify-content-end'>
             {/* mapirane poruke */}
-            {dymmyMessages.map(n =>
-                <div key={n.senderId} className={n.senderId === 1 ? 'd-flex justify-content-end' : 'd-flex justify-content-start'}>
+            {dymmyMessages.map((n, index) =>
+                <div key={index} className={n.senderId === 1 ? 'd-flex justify-content-end' : 'd-flex justify-content-start'}>
                     <p className={`p-2 px-4 rounded ${n.senderId !== 1 ? 'bg-primary text-light':'bg-light text-dark'}`}>{n.content}</p>
                 </div>
             )}
