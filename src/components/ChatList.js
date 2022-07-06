@@ -4,28 +4,47 @@ import { Form, InputGroup } from "react-bootstrap";
 import { UserContext } from "../contexts/userContext";
 import { FiPlus } from "react-icons/fi";
 import { FaSignInAlt } from "react-icons/fa";
+import { GiSandsOfTime } from "react-icons/gi";
+import { CgEnter } from "react-icons/cg";
 import Dialog from "./UI/Dialog";
 import { chatActions, fetchChatRoomsAsync } from "../store/chat-slice";
 import { createChatRoomAsync } from "../store/chat-slice";
 import { createJoinRequestAsync, requestActions } from "../store/request-slice";
+import { fetchRequestsAsync } from "../store/request-slice";
 
 // Ovde ce biti dostupne grupe i razgovori
 const ChatList = () => {
   const [createChat, setCreateChat] = useState(false);
   // naziv chata koji ce biti dodan
   const [chatName, setChatName] = useState("");
+  // grupe kojima je korisnik poslao zahtev za ulazak
+  const [requestedRooms, setRequestedRooms] = useState([]);
   // chats from redux
   const { rooms, status, error } = useSelector((state) => state.chat);
-  const { chosenRoom, status: requestsStatus } = useSelector((state) => state.requests);
+  const {
+    chosenRoom,
+    status: requestsStatus,
+    requests,
+  } = useSelector((state) => state.requests);
   // show modal
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(UserContext);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchChatRoomsAsync());
+    dispatch(fetchRequestsAsync());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (requests && rooms) {
+      const userRequests = requests
+        .filter((request) => request.senderId === user.id)
+        .map((request) => request.roomId);
+
+      setRequestedRooms(userRequests);
+    }
+  }, [requests, rooms, user]);
 
   const addChatSubmitHandler = (e) => {
     e.preventDefault();
@@ -39,28 +58,32 @@ const ChatList = () => {
     dispatch(chatActions.setRoom(n));
   };
 
-  const openModal = (n) =>{
+  console.log(rooms);
+
+  const openModal = (n) => {
     setShowModal(true);
     // console.log(n)
-    dispatch(requestActions.chooseRoom(n))
-  }
+    dispatch(requestActions.chooseRoom(n));
+  };
 
-  const dialogHandler = () =>{
+  const dialogHandler = () => {
     // console.log(user.id)
     // console.log(chosenRoom)
-    dispatch(createJoinRequestAsync({
-      senderId: user.id,
-      senderUsername: user.username,
-      roomId: chosenRoom.id,
-      roomName: chosenRoom.name,
-    }))
-  }
+    dispatch(
+      createJoinRequestAsync({
+        senderId: user.id,
+        senderUsername: user.username,
+        roomId: chosenRoom.id,
+        roomName: chosenRoom.name,
+      })
+    );
+  };
 
-  useEffect(()=>{
-    if(requestsStatus === "idle"){
-      setShowModal(false)
+  useEffect(() => {
+    if (requestsStatus === "idle") {
+      setShowModal(false);
     }
-  },[requestsStatus])
+  }, [requestsStatus]);
 
   return (
     <>
@@ -104,26 +127,45 @@ const ChatList = () => {
         )}
 
         {/* ovo ce biti zamenjeno konkretnim podacima */}
-        {(!error && status === "pendingFetchRooms") ||
+        {(!error && requestedRooms && status === "pendingFetchRooms") ||
         status === "pendingAddRoom" ? (
           <p>Loading</p>
         ) : (
-          rooms.map((n) => (
-            <div className="border-bottom d-flex" key={n.id}>
-              <button
-                className="text-start w-100 py-3 px-3 btn btn-light h-100"
-                onClick={showRoomMessagesHandler.bind(this, n)}
-              >
-                {n.name}
-              </button>
-              <button
-                className="btn btn-light"
-                onClick={(e) => openModal(n)}
-              >
-                <FaSignInAlt />
-              </button>
-            </div>
-          ))
+          rooms.map((n) => {
+            return n.customers.some((x) => x === user.id) ? (
+              <div className="border-bottom d-flex" key={n.id}>
+                <button
+                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
+                  onClick={showRoomMessagesHandler.bind(this, n)}
+                >
+                  {n.name}
+                </button>
+                <button className="btn btn-light">
+                  <CgEnter />
+                </button>
+              </div>
+            ) : (
+              <div className="border-bottom d-flex" key={n.id}>
+                <button
+                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
+                >
+                  {n.name}
+                </button>
+                {requestedRooms.includes(n.id) ? (
+                  <button className="btn btn-light">
+                    <GiSandsOfTime />
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-light"
+                    onClick={(e) => openModal(n)}
+                  >
+                    <FaSignInAlt />
+                  </button>
+                )}
+              </div>
+            );
+          })
         )}
         {error && <p>REJECTED</p>}
         <div className="pt-5"></div>

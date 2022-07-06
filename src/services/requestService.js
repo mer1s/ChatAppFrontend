@@ -6,8 +6,9 @@ axios.defaults.baseURL = apiUrl;
 const responseBody = (response) => response.data;
 
 const methods = {
-  getChats: () => axios.get("/Chat").then(responseBody),
-  createChat: (payload) => axios.post("/Chat", payload).then(responseBody),
+  getRequests: () => axios.get("/Chat/requests").then(responseBody),
+  sendJoinRequest: (payload) =>
+    axios.post("Chat/requests/join-request", payload).then(responseBody),
 };
 
 export default methods;

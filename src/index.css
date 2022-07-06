@@ -88,6 +88,11 @@ input[type=submit]{
   font-size: 1.25rem !important;
   text-transform: uppercase;
 }
+
+.messages{
+  height: calc(100% - 160px);
+  overflow-y: auto;
+}
 /* ======================================= overrides */
 .overflow-auto{
   overflow-y: auto !important;

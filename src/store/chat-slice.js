@@ -37,9 +37,12 @@ const chatSlice = createSlice({
     setAllChats: (state, action) => {
       state.rooms = action.payload;
     },
-    setRoom: (state, action) =>{
+    setRoom: (state, action) => {
       state.activeRoom = action.payload;
-    }
+    },
+    deleteActiveRoom: (state, action) => {
+      state.activeRoom = null;
+    },
   },
   extraReducers: (builder) => {
     // Fetch chat rooms
