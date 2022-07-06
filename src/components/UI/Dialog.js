@@ -11,10 +11,8 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
+  border: "none",
   boxShadow: 24,
-  p: 4,
 };
 
 const Dialog = ({ changeModalVisibility, open, acceptHandler }) => {
@@ -34,16 +32,16 @@ const Dialog = ({ changeModalVisibility, open, acceptHandler }) => {
         }}
       >
         <Fade in={open}>
-          <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Are you sure to send request
+          <Box className="bg-dark rounded p-5" sx={style}>
+            <Typography className="text-light" id="transition-modal-title" variant="h5" component="h2">
+              Are you sure you want to send a request?
             </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+            <Typography className="text-light" id="transition-modal-description" sx={{ mt: 2 }}>
               Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
             </Typography>
             <div style={{marginTop: '2rem', display: 'flex', justifyContent: 'right'}}>
-                <button style={{marginLeft: '0.5rem'}} onClick={handleClose}>Close</button>
-                <button style={{marginLeft: '0.5rem'}} onClick={acceptHandler}>Send Request</button>
+                <button className="btn-main text-light w-50 btn" style={{marginLeft: '0.5rem'}} onClick={handleClose}>Close</button>
+                <button className="btn-main text-light btn w-50" style={{marginLeft: '0.5rem'}} onClick={acceptHandler}>Send Request</button>
             </div>
           </Box>
         </Fade>
