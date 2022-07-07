@@ -36,7 +36,7 @@ const SideNavbar = ({ onClickHandler }) => {
         <h5 className="small text-muted text-center fw-light">chat</h5>
       </button>
       {
-        (user && user.roles.includes('Support') == true) &&
+        (user && user.roles.includes('Support') === true) &&
         <button
           className="btn btn-white button-block mt-4 w-100 button-block-flex-column"
           onClick={() => onClickHandler("requests")}

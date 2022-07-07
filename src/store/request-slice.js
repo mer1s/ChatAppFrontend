@@ -30,6 +30,19 @@ export const createJoinRequestAsync = createAsyncThunk(
   }
 );
 
+export const acceptCustomerRequest = createAsyncThunk(
+  "requests/acceptCustomerRequest",
+  async (payload, thunkAPI) => {
+    try {
+      console.log('PO HAIRU')
+      return await requestService.sendAcceptCustomerRequest(payload);
+    } catch (error) {
+      console.log('ZA HAIR')
+      return thunkAPI.rejectWithValue({ error });
+    }
+  }
+);
+
 const requestslice = createSlice({
   name: "requests",
   initialState,
@@ -65,6 +78,23 @@ const requestslice = createSlice({
       state.error = null;
     });
     builder.addCase(createJoinRequestAsync.rejected, (state, action) => {
+      state.status = "idle";
+      state.error = action.payload;
+    });
+
+    // Accept customer request
+    builder.addCase(acceptCustomerRequest.pending, (state) => {
+      state.status = "pendingAcceptCustomerRequest";
+      state.error = null;
+    });
+    builder.addCase(acceptCustomerRequest.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.requests = state.requests.filter(
+        (request) => request.id !== action.payload
+      );
+      state.error = null;
+    });
+    builder.addCase(acceptCustomerRequest.rejected, (state, action) => {
       state.status = "idle";
       state.error = action.payload;
     });

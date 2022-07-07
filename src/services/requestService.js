@@ -6,11 +6,15 @@ axios.defaults.baseURL = apiUrl;
 const responseBody = (response) => response.data;
 
 const methods = {
-  getRequests: () => axios.get("/Chat/requests").then(responseBody),
+  getRequests: () => axios.get("/request").then(responseBody),
   sendJoinRequest: (payload) =>
-    axios.post("Chat/requests/join-request", payload).then(responseBody),
-  getRoomsForWhichRequestExist:() => axios.get("/request/request-rooms").then(responseBody),
-  getCusotmersForSpecificRequestRoom:(id) => axios.get(`/request/room-customers?id=${id}`).then(responseBody)
+    axios.post("/request/join-request", payload).then(responseBody),
+  getRoomsForWhichRequestExist: () =>
+    axios.get("/request/request-rooms").then(responseBody),
+  getCusotmersForSpecificRequestRoom: (payload) =>
+    axios.get(`/request/room-customers?id=${payload}`).then(responseBody),
+  sendAcceptCustomerRequest: (payload) =>
+    axios.post("/request/accept-request", payload).then(responseBody),
 };
 
 export default methods;

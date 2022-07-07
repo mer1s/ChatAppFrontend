@@ -58,8 +58,6 @@ const ChatList = () => {
     dispatch(chatActions.setRoom(n));
   };
 
-  console.log(rooms);
-
   const openModal = (n) => {
     setShowModal(true);
     // console.log(n)
