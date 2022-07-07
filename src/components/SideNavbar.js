@@ -3,6 +3,7 @@ import { FiBell, FiUser, FiMessageSquare, FiLogOut } from "react-icons/fi";
 import { UserContext } from "../contexts/userContext";
 import { useDispatch } from "react-redux";
 import { chatActions } from "../store/chat-slice";
+import {FaArrowAltCircleRight} from 'react-icons/fa';
 
 const SideNavbar = ({ onClickHandler }) => {
   const { user, logOut } = useContext(UserContext);
@@ -34,6 +35,16 @@ const SideNavbar = ({ onClickHandler }) => {
         <FiMessageSquare className="icon-fs" />
         <h5 className="small text-muted text-center fw-light">chat</h5>
       </button>
+      {
+        (user && user.roles.includes('Support') == true) &&
+        <button
+          className="btn btn-white button-block mt-4 w-100 button-block-flex-column"
+          onClick={() => onClickHandler("requests")}
+        >
+          <FaArrowAltCircleRight className="icon-fs" />
+          <h5 className="small text-muted text-center fw-light">Requests</h5>
+        </button>
+      }
       {user && (
         <button
           className="btn btn-white button-block mt-4 w-100 button-block-flex-column"

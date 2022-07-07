@@ -1,0 +1,4 @@
+.requestContainer{
+    display: flex;
+    flex-direction: column;
+}
