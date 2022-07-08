@@ -83,6 +83,75 @@ const ChatList = () => {
     }
   }, [requestsStatus]);
 
+  const getView = () => {
+    let acceptedRequests = [];
+    let pendingRequests = [];
+    let availableRequests = [];
+    for (let i = 0; i < rooms.length; i++) {
+      if (rooms[i].customers.some((x) => x === user.id)) {
+        acceptedRequests.push(rooms[i]);
+      } else {
+        if (requestedRooms.includes(rooms[i].id)) {
+          pendingRequests.push(rooms[i]);
+        } else {
+          availableRequests.push(rooms[i]);
+        }
+      }
+    }
+    return (
+      <div>
+        {acceptedRequests.length > 0 && (
+          <div>
+            <h1>Accepted</h1>
+            {acceptedRequests.map((n, index) => (
+              <div className="border-bottom d-flex" key={index}>
+                <button
+                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
+                  onClick={showRoomMessagesHandler.bind(this, n)}
+                >
+                  {n.name}
+                </button>
+                <button className="btn btn-light">
+                  <CgEnter />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {pendingRequests.length > 0 && (
+          <div>
+            <h1>Pending</h1>
+            {pendingRequests.map((n, index) => (
+              <div className="border-bottom d-flex" key={index}>
+                <button className="text-start w-100 py-3 px-3 btn btn-light h-100">
+                  {n.name}
+                </button>
+                <button className="btn btn-light">
+                  <GiSandsOfTime />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {availableRequests.length > 0 && (
+          <div>
+            <h1>Available</h1>
+            {availableRequests.map((n, index) => (
+              <div className="border-bottom d-flex" key={index}>
+                <button className="text-start w-100 py-3 px-3 btn btn-light h-100">
+                  {n.name}
+                </button>
+                <button className="btn btn-light" onClick={(e) => openModal(n)}>
+                  <FaSignInAlt />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <Dialog
@@ -129,41 +198,7 @@ const ChatList = () => {
         status === "pendingAddRoom" ? (
           <p>Loading</p>
         ) : (
-          rooms.map((n) => {
-            return n.customers.some((x) => x === user.id) ? (
-              <div className="border-bottom d-flex" key={n.id}>
-                <button
-                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
-                  onClick={showRoomMessagesHandler.bind(this, n)}
-                >
-                  {n.name}
-                </button>
-                <button className="btn btn-light">
-                  <CgEnter />
-                </button>
-              </div>
-            ) : (
-              <div className="border-bottom d-flex" key={n.id}>
-                <button
-                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
-                >
-                  {n.name}
-                </button>
-                {requestedRooms.includes(n.id) ? (
-                  <button className="btn btn-light">
-                    <GiSandsOfTime />
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-light"
-                    onClick={(e) => openModal(n)}
-                  >
-                    <FaSignInAlt />
-                  </button>
-                )}
-              </div>
-            );
-          })
+          getView()
         )}
         {error && <p>REJECTED</p>}
         <div className="pt-5"></div>
