@@ -31,17 +31,6 @@ export const createJoinRequestAsync = createAsyncThunk(
   }
 );
 
-export const acceptCustomerRequestAsync = createAsyncThunk(
-  "requests/acceptCustomerRequestAsync",
-  async (payload, thunkAPI) => {
-    try {
-      return await requestService.sendAcceptCustomerRequest(payload);
-    } catch (error) {
-      return thunkAPI.rejectWithValue({ error });
-    }
-  }
-);
-
 export const fetchRoomsForWhichRequestExistAsync = createAsyncThunk(
   "requests/fetchRoomsForWhichRequestExistAsync",
   async (_, thunkAPI) => {
@@ -59,6 +48,11 @@ const requestslice = createSlice({
   reducers: {
     chooseRoom: (state, action) => {
       state.chosenRoom = action.payload;
+    },
+    onEmptyRoom: (state, action) => {
+      state.roomsForWhichRequestExist = state.roomsForWhichRequestExist.filter(
+        (room) => room.id !== action.payload
+      );
     },
   },
   extraReducers: (builder) => {
@@ -92,31 +86,15 @@ const requestslice = createSlice({
       state.error = action.payload;
     });
 
-    // Accept customer request
-    builder.addCase(acceptCustomerRequestAsync.pending, (state) => {
-      state.status = "pendingAcceptCustomerRequest";
-      state.error = null;
-    });
-    builder.addCase(acceptCustomerRequestAsync.fulfilled, (state, action) => {
-      state.status = "idle";
-      state.requests = state.requests.filter(
-        (request) => request.id !== action.payload
-      );
-      state.error = null;
-    });
-    builder.addCase(acceptCustomerRequestAsync.rejected, (state, action) => {
-      state.status = "idle";
-      state.error = action.payload;
-    });
-
     // Get rooms for which request exist
     builder.addCase(fetchRoomsForWhichRequestExistAsync.pending, (state) => {
-      state.status = "fetchRoomsForWhichRequestExistPending";
+      state.status = "pendingFetchRoomsForWhichRequestExist";
       state.error = null;
     });
     builder.addCase(
       fetchRoomsForWhichRequestExistAsync.fulfilled,
       (state, action) => {
+        console.log(action.payload);
         state.status = "idle";
         state.roomsForWhichRequestExist = action.payload;
         state.error = null;

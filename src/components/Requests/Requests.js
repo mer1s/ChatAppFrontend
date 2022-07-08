@@ -1,38 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import requestService from "../../services/requestService";
 import styles from "./Requests.module.css";
-import CustomerRequest from "../CustomerRequest/CustomerRequest";
 import { fetchRoomsForWhichRequestExistAsync } from "../../store/request-slice";
+import CustomAccordition from "../UI/CustomAccordition";
+import { requestActions } from "../../store/request-slice";
 
 export default function Requests() {
   const { status, roomsForWhichRequestExist } = useSelector(
     (state) => state.requests
   );
-  const [customers, setCustomers] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchRoomsForWhichRequestExistAsync());
   }, [dispatch]);
 
-  const showCustomerRequests = (id) => {
-    requestService
-      .getCusotmersForSpecificRequestRoom(id)
-      .then((res) => {
-        console.log(res);
-        setCustomers(res);
-      })
-      .catch((error) => console.log(error));
+  const onEmptyRoom = (id) => {
+    dispatch(requestActions.onEmptyRoom(id));
   };
 
-  return status === "fetchRoomsForWhichRequestExistPending" ? (
+  return status === "pendingFetchRoomsForWhichRequestExist" ? (
     <p>Loading...</p>
   ) : (
     <div className={styles.container}>
@@ -40,27 +28,17 @@ export default function Requests() {
         Requests
       </h3>
       <div className={styles.requestContainer}>
-        {roomsForWhichRequestExist &&
+        {roomsForWhichRequestExist && roomsForWhichRequestExist.length > 0 &&
           roomsForWhichRequestExist.map((room, index) => (
-            <Accordion key={index} style={{ marginTop: 10 }}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                onClick={() => showCustomerRequests(room.id)}
-              >
-                <Typography>{room.name}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {customers.map((customer, index) => (
-                  <CustomerRequest
-                    key={index}
-                    customer={{ roomId: room.id, ...customer }}
-                  />
-                ))}
-              </AccordionDetails>
-            </Accordion>
+            <CustomAccordition
+              room={room}
+              key={index}
+              onEmptyRoom={onEmptyRoom}
+            />
           ))}
+        {roomsForWhichRequestExist && roomsForWhichRequestExist.length === 0 && (
+          <p>No requests</p>
+        )}
       </div>
     </div>
   );
