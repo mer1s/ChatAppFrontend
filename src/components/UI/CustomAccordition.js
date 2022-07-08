@@ -27,7 +27,7 @@ const CustomAccordition = ({ room, onEmptyRoom }) => {
     setExpanded((oldState) => !oldState);
   };
 
-  const requestAccepted = (id) => {
+  const requestHandled = (id) => {
     let tmpArr = [...customers];
     tmpArr = tmpArr.filter((customer) => customer.id !== id);
     if (tmpArr.length === 0) {
@@ -54,7 +54,7 @@ const CustomAccordition = ({ room, onEmptyRoom }) => {
             <CustomerRequest
               key={index}
               customer={{ roomId: room.id, ...customer }}
-              requestAccepted={requestAccepted}
+              requestHandled={requestHandled}
             />
           ))}
         </AccordionDetails>

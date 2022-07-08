@@ -3,15 +3,24 @@ import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import styles from "./CustomerRequest.module.css";
 import requestService from "../../services/requestService";
 
-export default function CustomerRequest({ customer, requestAccepted }) {
-
+export default function CustomerRequest({ customer, requestHandled }) {
   const onAcceptRequestHandler = () => {
     requestService
       .sendAcceptCustomerRequest({
         roomId: customer.roomId,
         customerId: customer.senderId,
       })
-      .then((res) => requestAccepted(res))
+      .then((res) => requestHandled(res))
+      .catch((e) => console.log(e));
+  };
+
+  const onRejectRequestHandler = () => {
+    requestService
+      .rejectCustomerRequest({
+        roomId: customer.roomId,
+        customerId: customer.senderId,
+      })
+      .then((res) => requestHandled(res))
       .catch((e) => console.log(e));
   };
 
@@ -23,7 +32,10 @@ export default function CustomerRequest({ customer, requestAccepted }) {
           className={styles.greenIcon}
           onClick={onAcceptRequestHandler}
         />
-        <FiXCircle className={styles.redIcon} />
+        <FiXCircle
+          className={styles.redIcon}
+          onClick={onRejectRequestHandler}
+        />
       </div>
     </div>
   );

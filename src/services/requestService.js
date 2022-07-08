@@ -15,6 +15,8 @@ const methods = {
     axios.get(`/request/room-customers?id=${payload}`).then(responseBody),
   sendAcceptCustomerRequest: (payload) =>
     axios.post("/request/accept-request", payload).then(responseBody),
+  rejectCustomerRequest:(payload) => 
+    axios.post("/request/reject-request",payload).then(responseBody)
 };
 
 export default methods;
