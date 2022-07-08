@@ -6,6 +6,7 @@ const initialState = {
   status: "idle",
   error: null,
   chosenRoom: null,
+  roomsForWhichRequestExist: null,
 };
 
 export const fetchRequestsAsync = createAsyncThunk(
@@ -30,14 +31,23 @@ export const createJoinRequestAsync = createAsyncThunk(
   }
 );
 
-export const acceptCustomerRequest = createAsyncThunk(
-  "requests/acceptCustomerRequest",
+export const acceptCustomerRequestAsync = createAsyncThunk(
+  "requests/acceptCustomerRequestAsync",
   async (payload, thunkAPI) => {
     try {
-      console.log('PO HAIRU')
       return await requestService.sendAcceptCustomerRequest(payload);
     } catch (error) {
-      console.log('ZA HAIR')
+      return thunkAPI.rejectWithValue({ error });
+    }
+  }
+);
+
+export const fetchRoomsForWhichRequestExistAsync = createAsyncThunk(
+  "requests/fetchRoomsForWhichRequestExistAsync",
+  async (_, thunkAPI) => {
+    try {
+      return await requestService.getRoomsForWhichRequestExist();
+    } catch (error) {
       return thunkAPI.rejectWithValue({ error });
     }
   }
@@ -83,21 +93,42 @@ const requestslice = createSlice({
     });
 
     // Accept customer request
-    builder.addCase(acceptCustomerRequest.pending, (state) => {
+    builder.addCase(acceptCustomerRequestAsync.pending, (state) => {
       state.status = "pendingAcceptCustomerRequest";
       state.error = null;
     });
-    builder.addCase(acceptCustomerRequest.fulfilled, (state, action) => {
+    builder.addCase(acceptCustomerRequestAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.requests = state.requests.filter(
         (request) => request.id !== action.payload
       );
       state.error = null;
     });
-    builder.addCase(acceptCustomerRequest.rejected, (state, action) => {
+    builder.addCase(acceptCustomerRequestAsync.rejected, (state, action) => {
       state.status = "idle";
       state.error = action.payload;
     });
+
+    // Get rooms for which request exist
+    builder.addCase(fetchRoomsForWhichRequestExistAsync.pending, (state) => {
+      state.status = "fetchRoomsForWhichRequestExistPending";
+      state.error = null;
+    });
+    builder.addCase(
+      fetchRoomsForWhichRequestExistAsync.fulfilled,
+      (state, action) => {
+        state.status = "idle";
+        state.roomsForWhichRequestExist = action.payload;
+        state.error = null;
+      }
+    );
+    builder.addCase(
+      fetchRoomsForWhichRequestExistAsync.rejected,
+      (state, action) => {
+        state.status = "idle";
+        state.error = action.payload;
+      }
+    );
   },
 });
 

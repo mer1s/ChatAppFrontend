@@ -2,14 +2,14 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import styles from "./CustomerRequest.module.css";
-import { acceptCustomerRequest } from "../../store/request-slice";
+import { acceptCustomerRequestAsync } from "../../store/request-slice";
 
 export default function CustomerRequest({ customer }) {
   const dispatch = useDispatch();
 
   const onAcceptRequestHandler = () => {
     dispatch(
-      acceptCustomerRequest({
+      acceptCustomerRequestAsync({
         roomId: customer.roomId,
         customerId: customer.senderId,
       })
