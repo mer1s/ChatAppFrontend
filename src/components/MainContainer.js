@@ -9,6 +9,7 @@ const MainContainer = ({showTerm}) => {
   return (
     <div className='h-100-auto-overflow p-3 w-100'>
         {showTerm === 'chats' && activeRoom !== null ? <ChatWindow room={activeRoom} /> : ''}
+        {showTerm === 'empty' && ''}
     </div>
   )
 }

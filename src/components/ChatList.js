@@ -164,7 +164,7 @@ const ChatList = () => {
           <h3 className="p-0 m-0 py-3 text-center w-50 fw-light text-muted">
             Chat
           </h3>
-          {user.roles[0] === "Support" && (
+          {user?.roles[0] === "Support" && (
             <button
               className="btn btn-light"
               onClick={(e) => setCreateChat(true)}

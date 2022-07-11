@@ -4,8 +4,9 @@ import { UserContext } from "../contexts/userContext";
 import { useDispatch } from "react-redux";
 import { chatActions } from "../store/chat-slice";
 import {FaArrowAltCircleRight} from 'react-icons/fa';
+import { Link } from "react-router-dom";
 
-const SideNavbar = ({ onClickHandler }) => {
+const SideNavbar = () => {
   const { user, logOut } = useContext(UserContext);
   const dispatch = useDispatch();
 
@@ -20,39 +21,42 @@ const SideNavbar = ({ onClickHandler }) => {
 
   return (
     <div className="min-vh-100 bg-white border-right px-1 d-flex flex-column pt-5">
-      <button
+      <Link
+        to={'/main'}
         className="btn btn-white w-100 button-block button-block-flex-column"
-        onClick={() => onClickHandler("notifications")}
+        // onClick={() => onClickHandler("notifications")}
       >
         <FiBell className="icon-fs" />
         <h5 className="small text-muted text-center fw-light">feed</h5>
-      </button>
+      </Link>
 
-      <button
+      <Link
+        to={'/chats'}
         className="btn btn-white button-block mt-4 w-100 button-block-flex-column"
-        onClick={() => onClickHandler("chats")}
+        // onClick={() => onClickHandler("chats")}
       >
         <FiMessageSquare className="icon-fs" />
         <h5 className="small text-muted text-center fw-light">chat</h5>
-      </button>
+      </Link>
       {
         (user && user.roles.includes('Support') === true) &&
-        <button
+        <Link
+          to={'/requests'}
           className="btn btn-white button-block mt-4 w-100 button-block-flex-column"
-          onClick={() => onClickHandler("requests")}
+          // onClick={() => onClickHandler("requests")}
         >
           <FaArrowAltCircleRight className="icon-fs" />
           <h5 className="small text-muted text-center fw-light">Requests</h5>
-        </button>
+        </Link>
       }
       {user && (
-        <button
+        <Link
+          to={'/profile'}
           className="btn btn-white button-block mt-4 w-100 button-block-flex-column"
-          onClick={logOutHandler}
         >
           <FiUser className="icon-fs" />
           <h5 className="small text-muted text-center fw-light">profile</h5>
-        </button>
+        </Link>
       )}
       <button
         className="btn btn-white button-block mt-4 w-100 button-block-flex-column"

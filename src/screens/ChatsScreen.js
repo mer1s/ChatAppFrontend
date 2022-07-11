@@ -4,15 +4,14 @@ import MainContainer from '../components/MainContainer'
 import MiddleContainer from '../components/MiddleContainer'
 import SideNavbar from '../components/SideNavbar'
 
-const MainScreen = () => {
-
+const ChatsScreen = () => {
   return (
     <Container fluid className='m-0 p-0 min-vh-100 bg-main d-flex justify-content-start'>
         <SideNavbar/>
-        <MiddleContainer showTerm={'notifications'}/>
-        <MainContainer showTerm={'notifications'}/>
+        <MiddleContainer showTerm={'chats'}/>
+        <MainContainer showTerm={'chats'}/>
     </Container>
   )
 }
 
-export default MainScreen
+export default ChatsScreen

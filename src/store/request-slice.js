@@ -94,7 +94,6 @@ const requestslice = createSlice({
     builder.addCase(
       fetchRoomsForWhichRequestExistAsync.fulfilled,
       (state, action) => {
-        console.log(action.payload);
         state.status = "idle";
         state.roomsForWhichRequestExist = action.payload;
         state.error = null;
