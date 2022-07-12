@@ -28,7 +28,8 @@ export default function Requests() {
         Requests
       </h3>
       <div className={styles.requestContainer}>
-        {roomsForWhichRequestExist && roomsForWhichRequestExist.length > 0 &&
+        {roomsForWhichRequestExist &&
+          roomsForWhichRequestExist.length > 0 &&
           roomsForWhichRequestExist.map((room, index) => (
             <CustomAccordition
               room={room}
@@ -36,9 +37,8 @@ export default function Requests() {
               onEmptyRoom={onEmptyRoom}
             />
           ))}
-        {roomsForWhichRequestExist && roomsForWhichRequestExist.length === 0 && (
-          <p>No requests</p>
-        )}
+        {roomsForWhichRequestExist &&
+          roomsForWhichRequestExist.length === 0 && <p>No requests</p>}
       </div>
     </div>
   );

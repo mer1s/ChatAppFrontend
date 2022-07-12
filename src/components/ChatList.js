@@ -11,6 +11,7 @@ import { chatActions, fetchChatRoomsAsync } from "../store/chat-slice";
 import { createChatRoomAsync } from "../store/chat-slice";
 import { createJoinRequestAsync, requestActions } from "../store/request-slice";
 import { fetchRequestsAsync } from "../store/request-slice";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 // Ovde ce biti dostupne grupe i razgovori
 const ChatList = () => {
@@ -29,6 +30,8 @@ const ChatList = () => {
   // show modal
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(UserContext);
+  const [connection, setConnection] = useState();
+  const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -56,6 +59,39 @@ const ChatList = () => {
 
   const showRoomMessagesHandler = (n) => {
     dispatch(chatActions.setRoom(n));
+  };
+
+  const joinRoom = async (n) => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl("http://localhost:5116/chatHub")
+        .withAutomaticReconnect()
+        .build();
+
+      connection.on("ReceiveMessage", (data) => {
+        // console.log("RADI L", data);
+        // setMessages((messages) => [...messages, data]);
+        dispatch(chatActions.newMessage(data.message));
+      });
+
+      connection.onclose((e) => {
+        setConnection();
+        setMessages([]);
+      });
+
+      console.log(n);
+
+      await connection.start();
+      await connection.invoke("JoinRoom", {
+        userId: user.id,
+        roomId: n.id,
+      });
+      dispatch(chatActions.setRoom(n));
+      dispatch(chatActions.setConnection(connection));
+      setConnection({ connection });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const openModal = (n) => {
@@ -104,7 +140,11 @@ const ChatList = () => {
           <div>
             <h1>Accepted</h1>
             {acceptedRequests.map((n, index) => (
-              <div className="border-bottom d-flex" key={index}>
+              <div
+                className="border-bottom d-flex"
+                key={index}
+                onClick={() => joinRoom(n)}
+              >
                 <button
                   className="text-start w-100 py-3 px-3 btn btn-light h-100"
                   onClick={showRoomMessagesHandler.bind(this, n)}

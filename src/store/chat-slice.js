@@ -6,6 +6,8 @@ const initialState = {
   rooms: [],
   activeRoom: null,
   error: null,
+  connection: null,
+  messages: [],
 };
 
 export const fetchChatRoomsAsync = createAsyncThunk(
@@ -42,6 +44,16 @@ const chatSlice = createSlice({
     },
     deleteActiveRoom: (state, action) => {
       state.activeRoom = null;
+    },
+    setConnection: (state, action) => {
+      state.connection = action.payload;
+    },
+    newMessage: (state, action) => {
+      if (action.payload.changedRoom) {
+        state.messages = [];
+      } else {
+        state.messages = [...state.messages, action.payload];
+      }
     },
   },
   extraReducers: (builder) => {
