@@ -69,10 +69,10 @@ const ChatList = () => {
         .build();
 
       connection.on("ReceiveMessage", (data) => {
-        // console.log("RADI L", data);
         // setMessages((messages) => [...messages, data]);
         dispatch(chatActions.newMessage(data.message));
       });
+      dispatch(chatActions.newMessage({ changedRoom: true }));
 
       connection.onclose((e) => {
         setConnection();
@@ -84,6 +84,7 @@ const ChatList = () => {
       await connection.start();
       await connection.invoke("JoinRoom", {
         userId: user.id,
+        username: user.username,
         roomId: n.id,
       });
       dispatch(chatActions.setRoom(n));

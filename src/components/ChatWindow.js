@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
-import { HubConnectionBuilder } from "@microsoft/signalr";
 import { UserContext } from "../contexts/userContext";
 import { useSelector, useDispatch } from "react-redux";
-import { chatActions } from "../store/chat-slice";
 
 const ChatWindow = ({ room }) => {
   const [message, setMessage] = useState("");
@@ -11,11 +9,6 @@ const ChatWindow = ({ room }) => {
   const { user } = useContext(UserContext);
   const connection = useSelector((state) => state.chat.connection);
   const messages = useSelector((state) => state.chat.messages);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(chatActions.newMessage({ changedRoom: true }));
-  }, []);
 
   const onSendMessageToGroupHandler = async () => {
     // try {
