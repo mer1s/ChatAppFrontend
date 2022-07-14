@@ -91,9 +91,13 @@ input[type=submit]{
 
 .messages{
   height: calc(100% - 160px);
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 /* ======================================= overrides */
 .overflow-auto{
   overflow-y: auto !important;
+}
+/* ======================================= chat */
+.message{
+  max-width: 70%;
 }

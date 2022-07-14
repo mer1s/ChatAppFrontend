@@ -1,10 +1,16 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import { UserContext } from "../contexts/userContext";
 import { useSelector, useDispatch } from "react-redux";
 import { chatActions } from "../store/chat-slice";
 
 const ChatWindow = ({ room }) => {
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
   const [message, setMessage] = useState("");
   const { user } = useContext(UserContext);
   const connection = useSelector((state) => state.chat.connection);
@@ -17,6 +23,10 @@ const ChatWindow = ({ room }) => {
     dispatch(chatActions.setMessages(room.messages));
   }, [dispatch, room.messages]);
 
+  useEffect(()=>{
+    scrollToBottom();
+  },[])
+
   const onSendMessageToGroupHandler = async () => {
     const userToFetch = connections.filter(
       (conn) => conn.userId === user.id && conn.roomId === activeRoom.id
@@ -27,6 +37,8 @@ const ChatWindow = ({ room }) => {
       message,
       connId: userToFetch[0].connId,
     });
+
+    setMessage('')
   };
 
   return (
@@ -43,20 +55,22 @@ const ChatWindow = ({ room }) => {
             key={index}
             className={
               n.senderId === user.id
-                ? "d-flex justify-content-end"
-                : "d-flex justify-content-start"
+                ? "d-flex flex-column align-items-end"
+                : "d-flex flex-column align-items-start"
             }
           >
             <p
-              className={`p-2 px-4 rounded ${
+              className={`p-2 px-4 mb-0 rounded message ${
                 n.senderId !== user.id ? "bg-primary text-light" : "bg-light text-dark"
               }`}
             >
               {/* {n.message} */}
               {n.content}
             </p>
+            <p className="text-muted small m-0 p-0 mb-4">{n.username}</p>
           </div>
-        ))}
+        )).reverse()}
+        <div ref={messagesEndRef} />
       </div>
 
       <Form style={{ height: "80px" }} className="d-flex align-items-center">
