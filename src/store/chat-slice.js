@@ -6,8 +6,12 @@ const initialState = {
   rooms: [],
   activeRoom: null,
   error: null,
+  // Hub connection
   connection: null,
+  // List of room messages
   messages: [],
+  // All active user connections to rooms
+  connections: [],
 };
 
 export const fetchChatRoomsAsync = createAsyncThunk(
@@ -45,15 +49,45 @@ const chatSlice = createSlice({
     deleteActiveRoom: (state, action) => {
       state.activeRoom = null;
     },
+    // Set hub connection
     setConnection: (state, action) => {
       state.connection = action.payload;
     },
+    // New message sent from user
     newMessage: (state, action) => {
       if (action.payload.changedRoom) {
         state.messages = [];
       } else {
         state.messages = [...state.messages, action.payload];
       }
+    },
+    saveContextId: (state, action) => {
+      // Check is empty array
+      // If array is not empty, check is connection for specific room and specific user already added
+      if (state.connections.length > 0) {
+        if (
+          !state.connections.some(
+            (e) => e.connId === action.payload && e.roomId === state.activeRoom
+          )
+        ) {
+          state.connections.push({
+            connId: action.payload.connId,
+            roomId: state.activeRoom.id,
+            userId: action.payload.userId,
+          });
+        }
+      } else {
+        // If array is empty, add connection
+        state.connections.push({
+          connId: action.payload.connId,
+          roomId: state.activeRoom.id,
+          userId: action.payload.userId,
+        });
+      }
+    },
+    // Set messages fetched from backend for specific room
+    setMessages: (state, action) => {
+      state.messages = action.payload;
     },
   },
   extraReducers: (builder) => {

@@ -30,8 +30,8 @@ const ChatList = () => {
   // show modal
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(UserContext);
-  const [connection, setConnection] = useState();
-  const [messages, setMessages] = useState([]);
+  // const [connection, setConnection] = useState();
+  // const [messages, setMessages] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -69,17 +69,34 @@ const ChatList = () => {
         .build();
 
       connection.on("ReceiveMessage", (data) => {
-        // setMessages((messages) => [...messages, data]);
-        dispatch(chatActions.newMessage(data.message));
+        // When user enter room first time after login, generated Context.ConnectionId will be saved in redux
+        if (data.connId) {
+          dispatch(
+            chatActions.saveContextId({ connId: data.connId, userId: user.id })
+          );
+        }
+        // Every new received message will be stored in redux
+        dispatch(
+          chatActions.newMessage({
+            content: data.message,
+            createdAtUtc: new Date(),
+            deletedAtUtc: null,
+            id: null,
+            senderId: user.id,
+            updatedAtUtc: null,
+            username: user.username,
+          })
+        );
       });
+      // When user changed room, array with messages from previous room will be deleted from redux
       dispatch(chatActions.newMessage({ changedRoom: true }));
 
       connection.onclose((e) => {
-        setConnection();
-        setMessages([]);
+        // setConnection();
+        // setMessages([]);
       });
 
-      console.log(n);
+      // console.log(n);
 
       await connection.start();
       await connection.invoke("JoinRoom", {
@@ -89,7 +106,7 @@ const ChatList = () => {
       });
       dispatch(chatActions.setRoom(n));
       dispatch(chatActions.setConnection(connection));
-      setConnection({ connection });
+      // setConnection({ connection });
     } catch (e) {
       console.log(e);
     }
@@ -102,8 +119,6 @@ const ChatList = () => {
   };
 
   const dialogHandler = () => {
-    // console.log(user.id)
-    // console.log(chosenRoom)
     dispatch(
       createJoinRequestAsync({
         senderId: user.id,

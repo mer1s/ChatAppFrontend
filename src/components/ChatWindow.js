@@ -2,42 +2,30 @@ import React, { useState, useContext, useEffect } from "react";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import { UserContext } from "../contexts/userContext";
 import { useSelector, useDispatch } from "react-redux";
+import { chatActions } from "../store/chat-slice";
 
 const ChatWindow = ({ room }) => {
   const [message, setMessage] = useState("");
-  // const [messages, setMessages] = useState([]);
   const { user } = useContext(UserContext);
   const connection = useSelector((state) => state.chat.connection);
+  const connections = useSelector((state) => state.chat.connections);
+  const activeRoom = useSelector((state) => state.chat.activeRoom);
   const messages = useSelector((state) => state.chat.messages);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(chatActions.setMessages(room.messages));
+  }, [dispatch, room.messages]);
 
   const onSendMessageToGroupHandler = async () => {
-    // try {
-    //   const connection = new HubConnectionBuilder()
-    //     .withUrl("http://localhost:5116/chatHub")
-    //     .withAutomaticReconnect()
-    //     .build();
+    const userToFetch = connections.filter(
+      (conn) => conn.userId === user.id && conn.roomId === activeRoom.id
+    );
 
-    //   connection.on("ReceiveMessage", (data) => {
-    //     console.log("CHAT WINDOW", data);
-    //     setMessages((messages) => [...messages, data]);
-    //   });
-
-    //   connection.onclose((e) => {
-    //     // setConnection();
-    //     // setMessages([]);
-    //   });
-
-    //   await connection.start();
-    //   await connection.invoke("SendMessageToGroup", {
-    //     userId: user.id,
-    //     message,
-    //   });
-    // } catch (e) {
-    //   console.log(e);
-    // }
     await connection.invoke("SendMessageToGroup", {
       userId: user.id,
       message,
+      connId: userToFetch[0].connId,
     });
   };
 
@@ -54,18 +42,18 @@ const ChatWindow = ({ room }) => {
           <div
             key={index}
             className={
-              n.userId === 1
+              n.senderId === user.id
                 ? "d-flex justify-content-end"
                 : "d-flex justify-content-start"
             }
           >
             <p
               className={`p-2 px-4 rounded ${
-                n.userId !== 1 ? "bg-primary text-light" : "bg-light text-dark"
+                n.senderId !== user.id ? "bg-primary text-light" : "bg-light text-dark"
               }`}
             >
               {/* {n.message} */}
-              {n}
+              {n.content}
             </p>
           </div>
         ))}
