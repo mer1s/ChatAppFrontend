@@ -7,7 +7,7 @@ import { FaSignInAlt } from "react-icons/fa";
 import { GiSandsOfTime } from "react-icons/gi";
 import { CgEnter } from "react-icons/cg";
 import Dialog from "./UI/Dialog";
-import { chatActions, fetchChatRoomsAsync } from "../store/chat-slice";
+import { chatActions, fetchChatRoomsAsync,fetchSupportRoomsAsync } from "../store/chat-slice";
 import { createChatRoomAsync } from "../store/chat-slice";
 import { createJoinRequestAsync, requestActions } from "../store/request-slice";
 import { fetchRequestsAsync } from "../store/request-slice";
@@ -35,7 +35,8 @@ const ChatList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchChatRoomsAsync());
+    (user !== null && user.roles.includes('Support')) ? dispatch(fetchSupportRoomsAsync(user.id)):
+    (user !== null && dispatch(fetchChatRoomsAsync(user.id)))
     dispatch(fetchRequestsAsync());
   }, [dispatch]);
 
@@ -96,8 +97,6 @@ const ChatList = () => {
         // setMessages([]);
       });
 
-      // console.log(n);
-
       await connection.start();
       await connection.invoke("JoinRoom", {
         userId: user.id,
@@ -140,7 +139,7 @@ const ChatList = () => {
     let pendingRequests = [];
     let availableRequests = [];
     for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].customers.some((x) => x === user.id)) {
+      if (rooms[i].customers.some((x) => x.customerId === user.id)) {
         acceptedRequests.push(rooms[i]);
       } else {
         if (requestedRooms.includes(rooms[i].id)) {
@@ -151,6 +150,23 @@ const ChatList = () => {
       }
     }
     return (
+      user !== null && user.roles.includes('Support') ? 
+      <div>
+            {rooms.map((room, index) => (
+              <div
+                className="border-bottom d-flex"
+                key={index}
+                onClick={() => joinRoom(room)}
+              >
+                <button
+                  className="text-start w-100 py-3 px-3 btn btn-light h-100"
+                  onClick={showRoomMessagesHandler.bind(this, room)}
+                >
+                  {room.name}
+                </button>
+              </div>
+            ))}
+      </div>: 
       <div>
         {acceptedRequests.length > 0 && (
           <div>

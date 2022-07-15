@@ -16,14 +16,25 @@ const initialState = {
 
 export const fetchChatRoomsAsync = createAsyncThunk(
   "chat/fetchChatRoomsAsync",
-  async (_, thunkAPI) => {
+  async (payload, thunkAPI) => {
     try {
-      return await chatService.getChats();
+      return await chatService.getChats(payload);
     } catch (error) {
       return thunkAPI.rejectWithValue({ error });
     }
   }
 );
+
+export const fetchSupportRoomsAsync = createAsyncThunk(
+  "chat/fetchSupportRooms",
+  async (payload,thunkAPI) => {
+    try{
+      return await chatService.getSupportRooms(payload);
+    }catch(error){
+      return thunkAPI.rejectWithValue({error})
+    }
+  }
+)
 
 export const createChatRoomAsync = createAsyncThunk(
   "chat/createChatRoomAsync",
@@ -105,6 +116,21 @@ const chatSlice = createSlice({
       state.status = "idle";
       state.error = "Fetch error" + action.payload;
     });
+
+      // fetch support rooms
+      builder.addCase(fetchSupportRoomsAsync.pending, (state) => {
+        state.status = "pendingFetchRooms";
+        state.error = null;
+      });
+      builder.addCase(fetchSupportRoomsAsync.fulfilled, (state, action) => {
+        state.rooms = action.payload;
+        state.status = "idle";
+        state.error = null;
+      });
+      builder.addCase(fetchSupportRoomsAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.error = "Fetch error" + action.payload;
+      });
 
     // Add chat room
     builder.addCase(createChatRoomAsync.pending, (state) => {
