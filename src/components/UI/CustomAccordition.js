@@ -30,10 +30,10 @@ const CustomAccordition = ({ room, onEmptyRoom }) => {
   const requestHandled = (id) => {
     let tmpArr = [...customers];
     tmpArr = tmpArr.filter((customer) => customer.id !== id);
+    setCustomers(tmpArr);
     if (tmpArr.length === 0) {
       onEmptyRoom(room.id);
     }
-    setCustomers(tmpArr);
   };
 
   return (

@@ -5,6 +5,10 @@ import { requestsReducers } from "./request-slice";
 
 const store = configureStore({
   reducer: { ui: uiReducers, chat: chatReducers, requests: requestsReducers },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;
