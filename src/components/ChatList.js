@@ -140,7 +140,7 @@ const ChatList = () => {
     let pendingRequests = [];
     let availableRequests = [];
     for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].customers.some((x) => x === user.id)) {
+      if (rooms[i].customers.some((x) => x.customerId === user.id)) {
         acceptedRequests.push(rooms[i]);
       } else {
         if (requestedRooms.includes(rooms[i].id)) {
